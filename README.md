@@ -10,7 +10,7 @@
 
 Follow this [video](https://www.youtube.com/watch?v=JT8EXoobjSc&ab_channel=ProgrammingKnowledge2) for correct download 
 
-# simple-windows-driver
+# windows-driver
 
 Firstly run cmd.exe as administrator to turn on test signature mode after reloading
 

@@ -8,6 +8,8 @@
 
 - [Virtual Box](https://www.virtualbox.org/)
 
+- [Sysinternals](https://download.sysinternals.com/files/SysinternalsSuite.zip)
+
 Follow this [video](https://www.youtube.com/watch?v=JT8EXoobjSc&ab_channel=ProgrammingKnowledge2) for correct download 
 
 # windows-driver

@@ -11,9 +11,7 @@ NTSTATUS DriverEntry(
 )
 {
 	DbgPrnt(("[simple-windows-driver]"__FUNCTION__));
-	UNREFERENCED_PARAMETER(registryPath);
-
-	
+	UNREFERENCED_PARAMETER(registryPath);	
 	
 	driverObject->DriverUnload = DriverUnload; //pointer to unload function
 	
@@ -40,7 +38,7 @@ NTSTATUS DriverEntry(
 		return status;
 	}
 		
-	DbgPrnt(("win-driver: driver: loaded"));
+	DbgPrnt(("win-driver: driver: loaded\r\n"));
 	return status;
 }
 
@@ -49,6 +47,6 @@ void DriverUnload(
 {
 	IoDeleteSymbolicLink(&SysLinkName);
 	IoDeleteDevice(DeviceObject);
-	DbgPrnt(("win-driver: driver: unloaded"));
+	DbgPrnt(("win-driver: driver: unloaded\r\n"));
 }
 

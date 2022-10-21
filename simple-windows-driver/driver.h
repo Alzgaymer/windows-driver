@@ -1,7 +1,7 @@
 #include <ntddk.h>
 
 //#if DBG
-#define DbgPrnt(x) KdPrint (x)
+#define DbgPrnt(x) DbgPrintEx(0,0,x)
 //#else
 //#define DebugPring(x)
 //#endif

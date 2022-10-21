@@ -10,7 +10,7 @@ NTSTATUS DriverEntry(
 	_In_ PUNICODE_STRING registryPath
 )
 {
-	DbgPrnt(("[simple-windows-driver]"__FUNCTION__));
+	DbgPrnt(("[win-driver]"__FUNCTION__));
 	UNREFERENCED_PARAMETER(registryPath);	
 	
 	driverObject->DriverUnload = DriverUnload; //pointer to unload function
@@ -42,6 +42,15 @@ NTSTATUS DriverEntry(
 		driverObject->MajorFunction[i] = DispathPassThru;
 
 	DbgPrnt(("win-driver: driver: loaded\r\n"));
+	RTL_OSVERSIONINFOW os;
+	RtlGetVersion(&os);
+	//output windows version info 
+	DbgPrintEx(0,0,"task 3: windows: %u %u.%u",
+		(unsigned int)os.dwBuildNumber,
+		(unsigned int)os.dwMajorVersion,
+		(unsigned int)os.dwMinorVersion
+	);
+
 	return status;
 }
 

@@ -61,13 +61,13 @@ NTSTATUS DispathPassThru(PDEVICE_OBJECT DeviceObject, PIRP irp)
 	switch (irps->MajorFunction)
 	{
 	case IRP_MJ_CREATE:
-		DbgPrnt(("win-driver:"__FUNCTION__": request: create"));
+		DbgPrnt(("win-driver: "__FUNCTION__": request: create"));
 		break;
 	case IRP_MJ_CLOSE:
-		DbgPrnt(("win-driver:"__FUNCTION__": request: close"));
+		DbgPrnt(("win-driver: "__FUNCTION__": request: close"));
 		break;
 	case IRP_MJ_READ:
-		DbgPrnt(("win-driver:"__FUNCTION__": request: read"));
+		DbgPrnt(("win-driver: "__FUNCTION__": request: read"));
 		break;
 	default:
 		break;

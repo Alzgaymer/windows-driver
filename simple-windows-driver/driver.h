@@ -13,5 +13,7 @@ NTSTATUS DriverEntry(
 void DriverUnload(
 	_In_ PDRIVER_OBJECT DriverObject);
 
-NTSTATUS OnCreate(PDEVICE_OBJECT deviceObject, PIRP irp);
-NTSTATUS OnClose(PDEVICE_OBJECT deviceObject, PIRP irp);
+NTSTATUS DispathPassThru(
+	PDEVICE_OBJECT DeviceObject,
+	PIRP irp
+);

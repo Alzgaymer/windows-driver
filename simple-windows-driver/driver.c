@@ -38,6 +38,9 @@ NTSTATUS DriverEntry(
 		return status;
 	}
 		
+	for (size_t i = 0; i < IRP_MJ_MAXIMUM_FUNCTION; i++)
+		driverObject->MajorFunction[i] = DispathPassThru;
+
 	DbgPrnt(("win-driver: driver: loaded\r\n"));
 	return status;
 }
@@ -48,5 +51,33 @@ void DriverUnload(
 	IoDeleteSymbolicLink(&SysLinkName);
 	IoDeleteDevice(DeviceObject);
 	DbgPrnt(("win-driver: driver: unloaded\r\n"));
+}
+
+NTSTATUS DispathPassThru(PDEVICE_OBJECT DeviceObject, PIRP irp)
+{
+	PIO_STACK_LOCATION irps = IoGetCurrentIrpStackLocation(irp);
+	NTSTATUS status = STATUS_SUCCESS;
+	
+	switch (irps->MajorFunction)
+	{
+	case IRP_MJ_CREATE:
+		DbgPrnt(("win-driver:"__FUNCTION__": request: create"));
+		break;
+	case IRP_MJ_CLOSE:
+		DbgPrnt(("win-driver:"__FUNCTION__": request: close"));
+		break;
+	case IRP_MJ_READ:
+		DbgPrnt(("win-driver:"__FUNCTION__": request: read"));
+		break;
+	default:
+		break;
+	}
+
+	irp->IoStatus.Information = NULL;
+	irp->IoStatus.Status = status;
+
+	IoCompleteRequest(irp, IO_NO_INCREMENT);
+
+	return status;
 }
 

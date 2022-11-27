@@ -4,6 +4,8 @@ UNICODE_STRING DeviceName = RTL_CONSTANT_STRING(L"\\Device\\my-win-device");
 UNICODE_STRING SysLinkName = RTL_CONSTANT_STRING(L"\\??\\link-my-win-device");
 PDEVICE_OBJECT DeviceObject = NULL;
 
+#define DEVICE_SEND CTL_CODE(FILE_DEVICE_UNKNOWN, 0x801, METHOD_BUFFERED, FILE_WRITE_DATA)
+#define DEVICE_REC CTL_CODE(FILE_DEVICE_UNKNOWN, 0x802, METHOD_BUFFERED, FILE_READ_DATA)
 
 NTSTATUS DriverEntry(
 	_In_ PDRIVER_OBJECT driverObject,
@@ -41,6 +43,7 @@ NTSTATUS DriverEntry(
 	for (size_t i = 0; i < IRP_MJ_MAXIMUM_FUNCTION; i++)
 		driverObject->MajorFunction[i] = DispathPassThru;
 
+	driverObject->MajorFunction[IRP_MJ_DEVICE_CONTROL] = DriverCTL;
 	DbgPrnt(("win-driver: driver: loaded\r\n"));
 	RTL_OSVERSIONINFOW os;
 	RtlGetVersion(&os);
@@ -75,10 +78,8 @@ NTSTATUS DispathPassThru(PDEVICE_OBJECT DeviceObject, PIRP irp)
 	case IRP_MJ_CLOSE:
 		DbgPrnt(("win-driver: "__FUNCTION__": request: close"));
 		break;
-	case IRP_MJ_READ:
-		DbgPrnt(("win-driver: "__FUNCTION__": request: read"));
-		break;
 	default:
+		status = STATUS_INVALID_PARAMETER;
 		break;
 	}
 
@@ -90,3 +91,32 @@ NTSTATUS DispathPassThru(PDEVICE_OBJECT DeviceObject, PIRP irp)
 	return status;
 }
 
+NTSTATUS DriverCTL(PDEVICE_OBJECT DeviceObject, PIRP irp)
+{
+	PIO_STACK_LOCATION pirps = IoGetCurrentIrpStackLocation(irp);
+	NTSTATUS status = STATUS_SUCCESS;
+	
+	ULONG returnLength = 0;
+	PVOID buffer = irp->AssociatedIrp.SystemBuffer;
+	ULONG inLength = pirps->Parameters.DeviceIoControl.InputBufferLength;
+	ULONG outLength = pirps->Parameters.DeviceIoControl.OutputBufferLength;
+	WCHAR* demo = L"text from driver";
+	switch (pirps->Parameters.DeviceIoControl.IoControlCode)
+	{
+	case DEVICE_SEND:
+		KdPrint(("send data is %ws \r\n"),buffer);
+		returnLength = LEN(buffer);
+		break;
+	case DEVICE_REC:
+		wcsncpy(buffer, demo, 511);
+		returnLength = LEN(buffer);
+		break;
+	default:
+		status = STATUS_INVALID_PARAMETER;
+		break;
+	}
+	irp->IoStatus.Status = status;
+	irp->IoStatus.Information = returnLength;
+	IoCompleteRequest(irp, IO_NO_INCREMENT);
+	return status;
+}

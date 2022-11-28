@@ -19,7 +19,7 @@ NTSTATUS DispathPassThru(
 	PIRP irp
 );
 
-NTSTATUS DriverCTL(
+NTSTATUS WinDrvDispatchCTL(
 	PDEVICE_OBJECT DeviceObject,
 	PIRP irp
 );
